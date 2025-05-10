@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Load fnm
+eval "$(fnm env --use-on-cd)"
+
+# Run lint-staged
+pnpm exec lint-staged

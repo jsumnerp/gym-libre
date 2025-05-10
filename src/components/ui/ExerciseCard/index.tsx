@@ -1,5 +1,5 @@
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -7,20 +7,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table'
 
 interface Set {
-  set: number;
-  kg: number;
-  target: number;
-  reps: number;
+  set: number
+  kg: number
+  target: number
+  reps: number
 }
 
 interface ExerciseCardProps {
-  exerciseName: string;
-  sets: Set[];
-  onRepsChange: (index: number, value: number) => void;
-  onKgChange: (index: number, value: number) => void;
+  exerciseName: string
+  sets: Set[]
+  onRepsChange: (index: number, value: number) => void
+  onKgChange: (index: number, value: number) => void
 }
 
 export const ExerciseCard = ({
@@ -30,15 +30,15 @@ export const ExerciseCard = ({
   onKgChange,
 }: ExerciseCardProps) => {
   const handleRepsChange = (index: number, value: string) => {
-    onRepsChange(index, Number.parseInt(value) || 0);
-  };
+    onRepsChange(index, Number.parseInt(value) || 0)
+  }
 
   const handleKgChange = (index: number, value: string) => {
-    onKgChange(index, Number.parseFloat(value) || 0);
-  };
+    onKgChange(index, Number.parseFloat(value) || 0)
+  }
 
   return (
-    <Card className="w-full max-w-md p-4 rounded-sm gap-2">
+    <Card className="w-full max-w-md gap-2 rounded-sm p-4">
       <h2 className="text-xl font-semibold">{exerciseName}</h2>
       <Table>
         <TableHeader>
@@ -67,7 +67,7 @@ export const ExerciseCard = ({
                   type="number"
                   value={set.kg}
                   onChange={(e) => handleKgChange(index, e.target.value)}
-                  className="w-full border border-gray-300 rounded-sm"
+                  className="w-full rounded-sm border border-gray-300"
                   aria-label={`Weight in kilograms for set ${set.set}`}
                   min="0"
                   data-testid={`kg-input-${set.set}`}
@@ -85,7 +85,7 @@ export const ExerciseCard = ({
                   type="number"
                   value={set.reps}
                   onChange={(e) => handleRepsChange(index, e.target.value)}
-                  className="w-full border-2 border-gray-300 rounded-sm"
+                  className="w-full rounded-sm border-2 border-gray-300"
                   aria-label={`Number of repetitions for set ${set.set}`}
                   min="0"
                   step="1"
@@ -97,5 +97,5 @@ export const ExerciseCard = ({
         </TableBody>
       </Table>
     </Card>
-  );
-};
+  )
+}
