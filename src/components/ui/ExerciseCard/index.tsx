@@ -8,13 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-
-interface Set {
-  set: number
-  kg: number
-  target: number
-  reps: number
-}
+import { type Set } from '@/types/db'
 
 interface ExerciseCardProps {
   exerciseName: string
