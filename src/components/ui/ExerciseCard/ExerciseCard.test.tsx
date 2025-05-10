@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { ExerciseCard } from "./index";
 
 describe("ExerciseCard", () => {
@@ -13,10 +13,6 @@ describe("ExerciseCard", () => {
     onRepsChange: vi.fn(),
     onKgChange: vi.fn(),
   };
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
 
   it("renders exercise name", () => {
     render(
