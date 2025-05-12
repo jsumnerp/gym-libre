@@ -5,7 +5,7 @@ import { openDB, deleteDB } from 'idb'
 import {
   type GymLibreDB,
   type GymLibreDatabase,
-  type Exercise,
+  type Workout,
 } from '@/types/db'
 
 declare let self: ServiceWorkerGlobalScope
@@ -36,11 +36,15 @@ async function initDB() {
             console.log('Creating new database')
           // eslint-disable-next-line no-fallthrough
           case 1:
-            console.log('Creating new exercises store')
-            db.createObjectStore('exercises', {
+            console.log('Creating new workouts store')
+
+            // eslint-disable-next-line no-case-declarations
+            const store = db.createObjectStore('workouts', {
               keyPath: 'id',
               autoIncrement: true,
             })
+
+            store.createIndex('by-date', 'date')
         }
       },
       blocked() {
@@ -58,48 +62,147 @@ async function initDB() {
 
     // Clear existing objects and add sample exercises
     try {
-      const tx = db.transaction('exercises', 'readwrite')
-      const store = tx.objectStore('exercises')
+      const tx = db.transaction('workouts', 'readwrite')
+      const store = tx.objectStore('workouts')
 
       // Delete all existing objects
       const keys = await store.getAllKeys()
       await Promise.all(keys.map((key) => store.delete(key)))
       console.log('Existing objects cleared')
 
-      const exercises: Exercise[] = [
+      const workouts: Workout[] = [
         {
-          name: 'Bench Press',
-          sets: [
-            { set: 1, kg: 50, target: '3', reps: 3 },
-            { set: 2, kg: 50, target: '3', reps: 3 },
-            { set: 3, kg: 50, target: '3', reps: 3 },
-            { set: 4, kg: 50, target: '3', reps: 3 },
-            { set: 5, kg: 50, target: '3+', reps: 3 },
+          name: 'Day 1',
+          exercises: [
+            {
+              name: 'Squat (T1)',
+              sets: [
+                { set: 1, kg: 50, target: '3', reps: 3 },
+                { set: 2, kg: 50, target: '3', reps: 3 },
+                { set: 3, kg: 50, target: '3', reps: 3 },
+                { set: 4, kg: 50, target: '3', reps: 3 },
+                { set: 5, kg: 50, target: '3+', reps: 10 },
+              ],
+            },
+            {
+              name: 'Bench Press (T2)',
+              sets: [
+                { set: 1, kg: 20, target: '10', reps: 10 },
+                { set: 2, kg: 20, target: '10', reps: 10 },
+                { set: 3, kg: 20, target: '10', reps: 10 },
+              ],
+            },
+            {
+              name: 'Lat Pulldowns (T3)',
+              sets: [
+                { set: 1, kg: 30, target: '15', reps: 15 },
+                { set: 2, kg: 30, target: '15', reps: 15 },
+                { set: 3, kg: 30, target: '15+', reps: 15 },
+              ],
+            },
           ],
-          date: new Date().toISOString().split('T')[0],
+          date: '2025-05-05T09:00:00.000Z',
         },
         {
-          name: 'Squat',
-          sets: [
-            { set: 1, kg: 80, target: '10', reps: 0 },
-            { set: 2, kg: 80, target: '10', reps: 0 },
-            { set: 3, kg: 80, target: '10', reps: 0 },
+          name: 'Day 2',
+          exercises: [
+            {
+              name: 'OHP (T1)',
+              sets: [
+                { set: 1, kg: 25, target: '3', reps: 3 },
+                { set: 2, kg: 25, target: '3', reps: 3 },
+                { set: 3, kg: 25, target: '3', reps: 3 },
+                { set: 4, kg: 25, target: '3', reps: 3 },
+                { set: 5, kg: 25, target: '3+', reps: 10 },
+              ],
+            },
+            {
+              name: 'Deadlift (T2)',
+              sets: [
+                { set: 1, kg: 35, target: '10', reps: 10 },
+                { set: 2, kg: 35, target: '10', reps: 10 },
+                { set: 3, kg: 35, target: '10', reps: 10 },
+              ],
+            },
+            {
+              name: 'Cable Row (T3)',
+              sets: [
+                { set: 1, kg: 20, target: '15', reps: 15 },
+                { set: 2, kg: 20, target: '15', reps: 15 },
+                { set: 3, kg: 20, target: '15+', reps: 15 },
+              ],
+            },
           ],
-          date: new Date().toISOString().split('T')[0],
+          date: '2025-05-07T09:00:00.000Z',
         },
         {
-          name: 'Lat Pulldown',
-          sets: [
-            { set: 1, kg: 45, target: '15', reps: 0 },
-            { set: 2, kg: 45, target: '15', reps: 0 },
-            { set: 3, kg: 45, target: '15+', reps: 0 },
+          name: 'Day 3',
+          exercises: [
+            {
+              name: 'Bench Press (T1)',
+              sets: [
+                { set: 1, kg: 35, target: '3', reps: 3 },
+                { set: 2, kg: 35, target: '3', reps: 3 },
+                { set: 3, kg: 35, target: '3', reps: 3 },
+                { set: 4, kg: 35, target: '3', reps: 3 },
+                { set: 5, kg: 35, target: '3+', reps: 10 },
+              ],
+            },
+            {
+              name: 'Squat (T2)',
+              sets: [
+                { set: 1, kg: 20, target: '10', reps: 10 },
+                { set: 2, kg: 20, target: '10', reps: 10 },
+                { set: 3, kg: 20, target: '10', reps: 10 },
+              ],
+            },
+            {
+              name: 'Lat Pulldowns (T3)',
+              sets: [
+                { set: 1, kg: 30, target: '15', reps: 15 },
+                { set: 2, kg: 30, target: '15', reps: 15 },
+                { set: 3, kg: 30, target: '15+', reps: 25 },
+              ],
+            },
           ],
-          date: new Date().toISOString().split('T')[0],
+          date: '2025-05-09T09:00:00.000Z',
+        },
+        {
+          name: 'Day 4',
+          exercises: [
+            {
+              name: 'Deadlift (T1)',
+              sets: [
+                { set: 1, kg: 85, target: '3', reps: 3 },
+                { set: 2, kg: 85, target: '3', reps: 3 },
+                { set: 3, kg: 85, target: '3', reps: 3 },
+                { set: 4, kg: 85, target: '3', reps: 3 },
+                { set: 5, kg: 85, target: '3+', reps: 5 },
+              ],
+            },
+            {
+              name: 'OHP (T2)',
+              sets: [
+                { set: 1, kg: 10, target: '10', reps: 10 },
+                { set: 2, kg: 10, target: '10', reps: 10 },
+                { set: 3, kg: 10, target: '10', reps: 10 },
+              ],
+            },
+            {
+              name: 'Cable Row (T3)',
+              sets: [
+                { set: 1, kg: 20, target: '15', reps: 15 },
+                { set: 2, kg: 20, target: '15', reps: 15 },
+                { set: 3, kg: 20, target: '15+', reps: 15 },
+              ],
+            },
+          ],
+          date: '2025-05-10T09:00:00.000Z',
         },
       ]
 
-      for (const exercise of exercises) {
-        await store.add(exercise)
+      for (const workout of workouts) {
+        await store.add(workout)
       }
       await tx.done
       console.log('Sample exercises added to database')

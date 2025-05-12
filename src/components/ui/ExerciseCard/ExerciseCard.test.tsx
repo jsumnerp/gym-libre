@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen } from '@/test/test-utils'
 import userEvent from '@testing-library/user-event'
 import { describe, it, expect, vi } from 'vitest'
 import { ExerciseCard } from './index'
 
 describe('ExerciseCard', () => {
   const mockSets = [
-    { set: 1, kg: 50, target: 3, reps: 3 },
-    { set: 2, kg: 50, target: 3, reps: 0 },
+    { set: 1, kg: 50, target: '3', reps: 3 },
+    { set: 2, kg: 50, target: '3', reps: 0 },
   ]
 
   const mockHandlers = {
@@ -19,8 +19,7 @@ describe('ExerciseCard', () => {
       <ExerciseCard
         exerciseName="Bench Press"
         sets={mockSets}
-        onRepsChange={mockHandlers.onRepsChange}
-        onKgChange={mockHandlers.onKgChange}
+        readonly={true}
       />,
     )
 
@@ -32,8 +31,7 @@ describe('ExerciseCard', () => {
       <ExerciseCard
         exerciseName="Bench Press"
         sets={mockSets}
-        onRepsChange={mockHandlers.onRepsChange}
-        onKgChange={mockHandlers.onKgChange}
+        readonly={true}
       />,
     )
 
@@ -54,19 +52,34 @@ describe('ExerciseCard', () => {
       <ExerciseCard
         exerciseName="Bench Press"
         sets={mockSets}
-        onRepsChange={mockHandlers.onRepsChange}
-        onKgChange={mockHandlers.onKgChange}
+        readonly={true}
       />,
     )
 
     expect(screen.getAllByRole('row')).toHaveLength(mockSets.length + 1)
   })
 
-  it('renders the correct set values', () => {
+  it('renders the correct set values when readonly is true', () => {
     render(
       <ExerciseCard
         exerciseName="Bench Press"
         sets={mockSets}
+        readonly={true}
+      />,
+    )
+
+    expect(screen.getByTestId('set-number-1')).toHaveTextContent('1')
+    expect(screen.getByTestId('reps-1')).toHaveTextContent('3')
+    expect(screen.getByTestId('target-reps-1')).toHaveTextContent('3 reps')
+    expect(screen.getByTestId('kg-1')).toHaveTextContent('50')
+  })
+
+  it('renders the correct set values when readonly is false', () => {
+    render(
+      <ExerciseCard
+        exerciseName="Bench Press"
+        sets={mockSets}
+        readonly={false}
         onRepsChange={mockHandlers.onRepsChange}
         onKgChange={mockHandlers.onKgChange}
       />,
@@ -91,11 +104,12 @@ describe('ExerciseCard', () => {
     expect(screen.getByTestId('target-reps-2')).toHaveTextContent('3 reps')
   })
 
-  it('calls handlers correctly', async () => {
+  it('calls handlers correctly when readonly is false', async () => {
     render(
       <ExerciseCard
         exerciseName="Bench Press"
         sets={mockSets}
+        readonly={false}
         onRepsChange={mockHandlers.onRepsChange}
         onKgChange={mockHandlers.onKgChange}
       />,

@@ -11,13 +11,19 @@ export interface Exercise {
   id?: number
   name: string
   sets: Set[]
+}
+
+export interface Workout {
+  id?: number
+  name: string
+  exercises: Exercise[]
   date: string
 }
 
 export interface GymLibreDB extends DBSchema {
-  exercises: {
+  workouts: {
     key: number
-    value: Exercise
+    value: Workout
     indexes: {
       'by-date': string
     }

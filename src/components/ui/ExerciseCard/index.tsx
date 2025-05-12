@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+import { SetInput } from './SetInput'
 import {
   Table,
   TableBody,
@@ -9,31 +9,51 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { type Set } from '@/types/db'
+import { baseFontClass, cardBaseClass, h2Class } from '@/styles/classNames'
 
-interface ExerciseCardProps {
+type EditableExerciseCardProps = {
   exerciseName: string
   sets: Set[]
+  readonly: false
   onRepsChange: (index: number, value: number) => void
   onKgChange: (index: number, value: number) => void
 }
 
+type ReadonlyExerciseCardProps = {
+  exerciseName: string
+  sets: Set[]
+  readonly: true
+}
+
+type ExerciseCardProps = EditableExerciseCardProps | ReadonlyExerciseCardProps
+
 export const ExerciseCard = ({
   exerciseName,
   sets,
-  onRepsChange,
-  onKgChange,
+  readonly,
+  ...props
 }: ExerciseCardProps) => {
-  const handleRepsChange = (index: number, value: string) => {
-    onRepsChange(index, Number.parseInt(value) || 0)
-  }
+  const handleRepsChange = !readonly
+    ? (index: number, value: string) => {
+        ;(props as EditableExerciseCardProps).onRepsChange(
+          index,
+          Number.parseInt(value) || 0,
+        )
+      }
+    : undefined
 
-  const handleKgChange = (index: number, value: string) => {
-    onKgChange(index, Number.parseFloat(value) || 0)
-  }
+  const handleKgChange = !readonly
+    ? (index: number, value: string) => {
+        ;(props as EditableExerciseCardProps).onKgChange(
+          index,
+          Number.parseFloat(value) || 0,
+        )
+      }
+    : undefined
 
   return (
-    <Card className="w-full max-w-md gap-2 rounded-sm p-4">
-      <h2 className="text-xl font-semibold">{exerciseName}</h2>
+    <Card className={cardBaseClass}>
+      <h2 className={h2Class}>{exerciseName}</h2>
       <Table>
         <TableHeader>
           <TableRow>
@@ -47,44 +67,47 @@ export const ExerciseCard = ({
           {sets.map((set, index) => (
             <TableRow key={set.set}>
               <TableCell
-                className="font-medium"
                 data-testid={`set-number-${set.set}`}
+                className={baseFontClass}
               >
                 {set.set}
               </TableCell>
-              <TableCell>
-                <label htmlFor={`kg-input-${set.set}`} className="sr-only">
-                  Weight in kilograms for set {set.set}
-                </label>
-                <Input
-                  id={`kg-input-${set.set}`}
-                  type="number"
-                  value={set.kg}
-                  onChange={(e) => handleKgChange(index, e.target.value)}
-                  className="w-full rounded-sm border border-gray-300"
-                  aria-label={`Weight in kilograms for set ${set.set}`}
-                  min="0"
-                  data-testid={`kg-input-${set.set}`}
-                />
+              <TableCell className={baseFontClass}>
+                {readonly ? (
+                  <span data-testid={`kg-${set.set}`}>{set.kg}</span>
+                ) : (
+                  <SetInput
+                    id={`kg-input-${set.set}`}
+                    value={set.kg}
+                    onChange={(value) =>
+                      handleKgChange && handleKgChange(index, value)
+                    }
+                    ariaLabel={`Weight in kilograms for set ${set.set}`}
+                    min="0"
+                  />
+                )}
               </TableCell>
-              <TableCell data-testid={`target-reps-${set.set}`}>
+              <TableCell
+                className={baseFontClass}
+                data-testid={`target-reps-${set.set}`}
+              >
                 {set.target} reps
               </TableCell>
-              <TableCell>
-                <label htmlFor={`reps-input-${set.set}`} className="sr-only">
-                  Number of repetitions for set {set.set}
-                </label>
-                <Input
-                  id={`reps-input-${set.set}`}
-                  type="number"
-                  value={set.reps}
-                  onChange={(e) => handleRepsChange(index, e.target.value)}
-                  className="w-full rounded-sm border-2 border-gray-300"
-                  aria-label={`Number of repetitions for set ${set.set}`}
-                  min="0"
-                  step="1"
-                  data-testid={`reps-input-${set.set}`}
-                />
+              <TableCell className={baseFontClass}>
+                {readonly ? (
+                  <span data-testid={`reps-${set.set}`}>{set.reps}</span>
+                ) : (
+                  <SetInput
+                    id={`reps-input-${set.set}`}
+                    value={set.reps}
+                    onChange={(value) =>
+                      handleRepsChange && handleRepsChange(index, value)
+                    }
+                    ariaLabel={`Number of repetitions for set ${set.set}`}
+                    min="0"
+                    step="1"
+                  />
+                )}
               </TableCell>
             </TableRow>
           ))}

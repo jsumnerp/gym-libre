@@ -1,30 +1,30 @@
 import { useState, useEffect } from 'react'
 import { openDB } from 'idb'
-import { type Exercise, type GymLibreDB } from '@/types/db'
+import { type Workout, type GymLibreDB } from '@/types/db'
 
-export function useExercises() {
-  const [exercises, setExercises] = useState<Exercise[]>([])
+export function useWorkouts() {
+  const [workouts, setWorkouts] = useState<Workout[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     let mounted = true
 
-    async function loadExercises() {
+    async function loadWorkouts() {
       try {
         const db = await openDB<GymLibreDB>('gym-libre-db', 1)
-        const tx = db.transaction('exercises', 'readonly')
-        const store = tx.objectStore('exercises')
-        const allExercises = await store.getAll()
+        const allWorkouts = (
+          await db.getAllFromIndex('workouts', 'by-date')
+        ).reverse()
 
         if (mounted) {
-          setExercises(allExercises)
+          setWorkouts(allWorkouts)
           setError(null)
         }
       } catch (err) {
         if (mounted) {
           setError(
-            err instanceof Error ? err : new Error('Failed to load exercises'),
+            err instanceof Error ? err : new Error('Failed to load workouts'),
           )
         }
       } finally {
@@ -34,12 +34,12 @@ export function useExercises() {
       }
     }
 
-    loadExercises()
+    loadWorkouts()
 
     return () => {
       mounted = false
     }
   }, [])
 
-  return { exercises, loading, error }
+  return { workouts, loading, error }
 }
