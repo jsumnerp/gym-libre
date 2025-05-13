@@ -1,4 +1,4 @@
-import { Card } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { SetInput } from './SetInput'
 import {
   Table,
@@ -9,7 +9,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { type Set } from '@/types/db'
-import { baseFontClass, cardBaseClass, h2Class } from '@/styles/classNames'
 
 type EditableExerciseCardProps = {
   exerciseName: string
@@ -52,67 +51,67 @@ export const ExerciseCard = ({
     : undefined
 
   return (
-    <Card className={cardBaseClass}>
-      <h2 className={h2Class}>{exerciseName}</h2>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[60px]">Set</TableHead>
-            <TableHead>kg</TableHead>
-            <TableHead>Target</TableHead>
-            <TableHead>Reps</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {sets.map((set, index) => (
-            <TableRow key={set.set}>
-              <TableCell
-                data-testid={`set-number-${set.set}`}
-                className={baseFontClass}
-              >
-                {set.set}
-              </TableCell>
-              <TableCell className={baseFontClass}>
-                {readonly ? (
-                  <span data-testid={`kg-${set.set}`}>{set.kg}</span>
-                ) : (
-                  <SetInput
-                    id={`kg-input-${set.set}`}
-                    value={set.kg}
-                    onChange={(value) =>
-                      handleKgChange && handleKgChange(index, value)
-                    }
-                    ariaLabel={`Weight in kilograms for set ${set.set}`}
-                    min="0"
-                  />
-                )}
-              </TableCell>
-              <TableCell
-                className={baseFontClass}
-                data-testid={`target-reps-${set.set}`}
-              >
-                {set.target} reps
-              </TableCell>
-              <TableCell className={baseFontClass}>
-                {readonly ? (
-                  <span data-testid={`reps-${set.set}`}>{set.reps}</span>
-                ) : (
-                  <SetInput
-                    id={`reps-input-${set.set}`}
-                    value={set.reps}
-                    onChange={(value) =>
-                      handleRepsChange && handleRepsChange(index, value)
-                    }
-                    ariaLabel={`Number of repetitions for set ${set.set}`}
-                    min="0"
-                    step="1"
-                  />
-                )}
-              </TableCell>
+    <Card className="w-full max-w-md gap-2 rounded-sm">
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold">
+          <h2>{exerciseName}</h2>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[60px]">Set</TableHead>
+              <TableHead>kg</TableHead>
+              <TableHead>Target</TableHead>
+              <TableHead>Reps</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {sets.map((set, index) => (
+              <TableRow key={set.set}>
+                <TableCell data-testid={`set-number-${set.set}`}>
+                  {set.set}
+                </TableCell>
+                <TableCell>
+                  {readonly ? (
+                    <span data-testid={`kg-${set.set}`}>{set.kg}</span>
+                  ) : (
+                    <SetInput
+                      id={`kg-input-${set.set}`}
+                      value={set.kg}
+                      onChange={(value) =>
+                        handleKgChange && handleKgChange(index, value)
+                      }
+                      ariaLabel={`Weight in kilograms for set ${set.set}`}
+                      min="0"
+                    />
+                  )}
+                </TableCell>
+                <TableCell data-testid={`target-reps-${set.set}`}>
+                  {set.target} reps
+                </TableCell>
+                <TableCell>
+                  {readonly ? (
+                    <span data-testid={`reps-${set.set}`}>{set.reps}</span>
+                  ) : (
+                    <SetInput
+                      id={`reps-input-${set.set}`}
+                      value={set.reps}
+                      onChange={(value) =>
+                        handleRepsChange && handleRepsChange(index, value)
+                      }
+                      ariaLabel={`Number of repetitions for set ${set.set}`}
+                      min="0"
+                      step="1"
+                    />
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
     </Card>
   )
 }

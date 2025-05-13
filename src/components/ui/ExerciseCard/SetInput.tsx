@@ -1,6 +1,5 @@
 import { Input } from '@/components/ui/input'
 import React from 'react'
-import { inputBaseClass } from '@/styles/classNames'
 
 interface SetInputProps {
   id: string
@@ -28,7 +27,7 @@ export const SetInput: React.FC<SetInputProps> = ({
       type="number"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className={inputBaseClass}
+      className="w-full rounded-sm border border-gray-300"
       aria-label={ariaLabel}
       min={min}
       step={step}
